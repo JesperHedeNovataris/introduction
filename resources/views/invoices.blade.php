@@ -18,7 +18,7 @@
                 <td>{{ $invoice->invoice_no}}</td>
                 <td>{{ $invoice->invoice_due_at }}</td>
                 <td>{{ $invoice->amount}}</td>
-                <td> {{-- TODO: insert name of customer and link to customer --}}</td>
+                <td><a href="/customer/{{ $invoice->customer_id }}">{{ $invoice->customer_name }}</a></td>
             </tr>
             @endforeach
             </tbody>

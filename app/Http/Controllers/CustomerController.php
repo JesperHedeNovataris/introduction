@@ -39,7 +39,7 @@ class CustomerController extends Controller
         //Calculate price
         $price = 0;
 
-        foreach($deliveries as $delivery){
+        foreach($deliveries as $delivery) {
             $price += $delivery->count * $agreement->unit_price;            
         }        
 
