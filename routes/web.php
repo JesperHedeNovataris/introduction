@@ -18,6 +18,7 @@ Route::get('/', 'CustomerController@index');
 Route::group(['prefix' => 'customer'], function () {
     Route::get('/{id}', 'CustomerController@show');
     Route::get('/invoice/{id}', 'CustomerController@invoice');
+    Route::post('/changetype/{id}', 'CustomerController@changetype');
 });
 
 Route::get('/invoices', 'InvoiceController@index');

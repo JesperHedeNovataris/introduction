@@ -72,4 +72,19 @@ class CustomerController extends Controller
 
         return $invoice;
     }
+
+    public function changetype($id)
+    {
+        $customer = Customer::findOrFail($id);
+        $agreement = $customer->agreement;
+
+        if($agreement->type == Agreement::TYPE_WEEKLY)
+            $agreement->type = Agreement::TYPE_MONTHLY;
+        elseif($agreement->type == Agreement::TYPE_MONTHLY)
+            $agreement->type = Agreement::TYPE_WEEKLY;
+        
+        $agreement->save();
+
+        return Redirect::action('CustomerController@show',['id' => $id]);
+    }
 }
