@@ -64,7 +64,7 @@ class CustomerController extends Controller
         $max_invoice_no = Invoice::max('invoice_no');
 
         $invoice->agreement_id = $customer->agreement->id;
-        $invoice->invoice_no = ++$max_invoice_no; // Defaults to 1 if not invoices in DB.
+        $invoice->invoice_no = ++$max_invoice_no; // Defaults to 1 if no invoices in DB.
 
         // Set due date 30 days ahead.
         $date = new DateTime();
