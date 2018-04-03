@@ -41,6 +41,7 @@ class CustomerController extends Controller
     {
         $customer = Customer::findOrFail($id);
 
+        // Filter deliveries on last week or month.
         $deliveries = $customer->deliveries;
         if($customer->agreement->type == Agreement::TYPE_WEEKLY){
             $deliveries = $customer->deliveries->where('delivered_at', '>', Carbon::now()->subDays(7));
@@ -57,8 +58,7 @@ class CustomerController extends Controller
 
         foreach($deliveries as $delivery) {
             $price += $delivery->count * $customer->agreement->unit_price;            
-        }        
-
+        }
  
         // Get invoice count
         $max_invoice_no = Invoice::max('invoice_no');
@@ -66,9 +66,8 @@ class CustomerController extends Controller
         $invoice->agreement_id = $customer->agreement->id;
         $invoice->invoice_no = ++$max_invoice_no; // Defaults to 1 if no invoices in DB.
 
-        // Set due date 30 days ahead.
-        $date = new DateTime();
-        $invoice->invoice_due_at = $date->modify('+30 day');
+        // Set due date 30 days ahead.        
+        $invoice->invoice_due_at = Carbon::now()->addDays(30);
         $invoice->amount = $price;
 
         return $invoice;
