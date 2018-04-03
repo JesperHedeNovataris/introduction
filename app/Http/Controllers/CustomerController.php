@@ -30,7 +30,7 @@ class CustomerController extends Controller
     {
         $customer = Customer::findOrFail($id);
 
-        $agreement = Agreement::where('type', 'monthly')->first();
+        $agreement = Agreement::where('type', 'monthly')->first(); // TODO option for monthly or weekly.
         $deliveries = Delivery::where('customer_id', $id)->get();
 
         // Object to insert.
@@ -44,22 +44,20 @@ class CustomerController extends Controller
         }        
 
  
-        // //'agreement_id', 'invoice_no', 'invoice_due_at', 'amount'
-        
+        // Get invoice count
+        $max_invoice_no = Invoice::max('invoice_no');
 
-        // // Get invoice count
-
-        $invoice->agreement_id = 100;
-        $invoice->invoice_no = 100;
+        $invoice->agreement_id = $agreement->id;
+        $invoice->invoice_no = ++$max_invoice_no; // Defaults to 1 if not invoices in DB.
 
         // Set due date 30 days ahead.
         $date = new DateTime();
-        $invoice->invoice_due_at = $date->modify('+1 day');
+        $invoice->invoice_due_at = $date->modify('+30 day');
         $invoice->amount = $price; 
 
         $invoice->save();
         
         
-        // return Redirect::action('CustomerController@show',['id' => $id]);
+        return Redirect::action('CustomerController@show',['id' => $id]);
     }
 }
