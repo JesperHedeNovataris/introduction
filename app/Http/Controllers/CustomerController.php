@@ -6,7 +6,7 @@ use App\Agreement;
 use App\Customer;
 use App\Delivery;
 use App\Invoice;
-
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\View;
 
@@ -29,10 +29,25 @@ class CustomerController extends Controller
 
     public function invoice($id)
     {
+        $invoice = $this->CreateInvoice($id);
+
+        $invoice->save();
+        
+        
+        return Redirect::action('CustomerController@show',['id' => $id]);
+    }
+
+    public function CreateInvoice($id)
+    {
         $customer = Customer::findOrFail($id);
 
-        $agreement = Agreement::where('id', $customer->agreement_id)->first(); // TODO handle zero customer case.
-        $deliveries = Delivery::where('customer_id', $id)->get();
+        $deliveries = $customer->deliveries;
+        if($customer->agreement->type == Agreement::TYPE_WEEKLY){
+            $deliveries = $customer->deliveries->where('delivered_at', '>', Carbon::now()->subDays(7));
+        }
+        elseif($customer->agreement->type == Agreement::TYPE_MONTHLY){
+            $deliveries = $customer->deliveries->where('delivered_at', '>', Carbon::now()->subMonth(1));
+        }
 
         // Object to insert.
         $invoice = new Invoice;
@@ -41,24 +56,21 @@ class CustomerController extends Controller
         $price = 0;
 
         foreach($deliveries as $delivery) {
-            $price += $delivery->count * $agreement->unit_price;            
+            $price += $delivery->count * $customer->agreement->unit_price;            
         }        
 
  
         // Get invoice count
         $max_invoice_no = Invoice::max('invoice_no');
 
-        $invoice->agreement_id = $agreement->id;
+        $invoice->agreement_id = $customer->agreement->id;
         $invoice->invoice_no = ++$max_invoice_no; // Defaults to 1 if not invoices in DB.
 
         // Set due date 30 days ahead.
         $date = new DateTime();
         $invoice->invoice_due_at = $date->modify('+30 day');
-        $invoice->amount = $price; 
+        $invoice->amount = $price;
 
-        $invoice->save();
-        
-        
-        return Redirect::action('CustomerController@show',['id' => $id]);
+        return $invoice;
     }
 }

@@ -63,6 +63,8 @@ __app/Http/Controllers/CustomerController.php__
    
 __tests/Unit/CustomerTest.php__
  - Here is a couple of simple unit tests you can use to validate that you create the invoice correctly.
+
+ Run cmd: php .\vendor\phpunit\phpunit\phpunit
  
 __resources/views/__
  - If you like, you can try to finish the views + controllers to have a sort of working application.
