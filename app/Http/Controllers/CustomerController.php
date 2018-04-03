@@ -30,7 +30,7 @@ class CustomerController extends Controller
     {
         $customer = Customer::findOrFail($id);
 
-        $agreement = Agreement::where('type', 'monthly')->first(); // TODO option for monthly or weekly.
+        $agreement = Agreement::where('id', $customer->agreement_id)->first(); 
         $deliveries = Delivery::where('customer_id', $id)->get();
 
         // Object to insert.
