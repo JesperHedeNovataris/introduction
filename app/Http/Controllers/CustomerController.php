@@ -30,7 +30,7 @@ class CustomerController extends Controller
     {
         $customer = Customer::findOrFail($id);
 
-        $agreement = Agreement::where('id', $customer->agreement_id)->first(); 
+        $agreement = Agreement::where('id', $customer->agreement_id)->first(); // TODO handle zero customer case.
         $deliveries = Delivery::where('customer_id', $id)->get();
 
         // Object to insert.
