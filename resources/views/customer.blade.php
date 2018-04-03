@@ -7,5 +7,7 @@
         <input type="submit" value="Invoice customer" />
     </form>
 
+    @include('invoicestable')
+
     {{-- TODO: show list of invoices for customer --}}
 @endsection

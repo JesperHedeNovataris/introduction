@@ -23,7 +23,8 @@ class CustomerController extends Controller
     public function show($id)
     {
         $customer = Customer::findOrFail($id);
-        return View::make('customer', compact('customer'));
+        $invoices = Invoice::where('agreement_id', $id)->get();
+        return View::make('customer', compact('customer'))->with('invoices', $invoices);
     }
 
     public function invoice($id)
