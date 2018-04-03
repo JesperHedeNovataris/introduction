@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Customer;
+use App\Invoice;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\View;
 
@@ -24,8 +25,19 @@ class CustomerController extends Controller
     {
         $customer = Customer::findOrFail($id);
 
-        // TODO: Create invoice for customer
+        // //'agreement_id', 'invoice_no', 'invoice_due_at', 'amount'
+        $invoice = new Invoice;
 
-        return Redirect::action(self::class.'@show',['id' => $id]);
+        // // Get invoice count
+
+        $invoice->agreement_id = 100;
+        $invoice->invoice_no = 100;
+        $invoice->invoice_due_at = date(DATE_RFC2822);
+        $invoice->amount = 1000000; // One million!
+
+        $invoice->save();
+        
+        
+        return Redirect::action('CustomerController@show',['id' => $id]);
     }
 }
